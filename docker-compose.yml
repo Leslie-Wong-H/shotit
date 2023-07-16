@@ -1,6 +1,39 @@
 version: "3.5"
 
 services:
+  www:
+    image: lesliewong007/trace.moe-www:latest
+    restart: unless-stopped
+    environment:
+      - NEXT_PUBLIC_API_ENDPOINT=${NEXT_PUBLIC_API_ENDPOINT}
+      - NEXT_PUBLIC_MEDIA_ENDPOINT=${NEXT_PUBLIC_MEDIA_ENDPOINT}
+      - NEXT_PUBLIC_ANILIST_ENDPOINT=${NEXT_PUBLIC_ANILIST_ENDPOINT}
+    ports:
+      - ${WWW_PORT}:3000
+    networks:
+      shotit_net:
+
+
+  mongo-telegram-bot:
+    image: lesliewong007/trace.moe-telegram-bot:latest
+    restart: unless-stopped
+    environment:
+      - MONGODB_ATLAS_URL=${MONGODB_URL}
+      - AWS_BUCKET=${AWS_BUCKET}
+      - AWS_ENDPOINT_URL=${AWS_ENDPOINT_URL}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
+      - wechatAppId=${wechatAppId}
+      - wechatSecret=${wechatSecret}
+      - douyinAppId=${douyinAppId}
+      - douyinSecret=${douyinSecret}
+    ports:
+      - ${MONGOBOT_PORT}:3000
+    networks:
+      shotit_net:
+
+
   api:
     container_name: shotit-api
     image: ghcr.io/shotit/shotit-api:v0.9.5
