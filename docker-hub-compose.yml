@@ -33,6 +33,8 @@ services:
       - AWS_SECRET_KEY=${AWS_SECRET_KEY}
       - wechatAppId=${wechatAppId}
       - wechatSecret=${wechatSecret}
+      - weixinAppId=${weixinAppId}
+      - weixinSecret=${weixinSecret}
       - douyinAppId=${douyinAppId}
       - douyinSecret=${douyinSecret}
     ports:
