@@ -47,10 +47,10 @@ services:
 
   api:
     container_name: shotit-api
-    image: ghcr.io/shotit/shotit-api:v0.9.10
+    image: ghcr.io/shotit/shotit-api:v0.9.17
     restart: unless-stopped
     environment:
-      - TRACE_ALGO=cl
+      - TRACE_ALGO=${TRACE_ALGO}
       - SOLA_DB_HOST=mariadb
       - SOLA_DB_PORT=3306
       - SOLA_DB_USER=root
@@ -141,7 +141,7 @@ services:
   liresolr:
     container_name: shotit-liresolr
     image: ghcr.io/leslie-wong-h/liresolr:latest
-    command: solr-precreate cl_0 /opt/solr/server/solr/configsets/liresolr
+    command: solr-precreate "${TRACE_ALGO}_0" /opt/solr/server/solr/configsets/liresolr
     restart: unless-stopped
     ports:
       - ${SOLR_PORT}:8983
@@ -155,7 +155,7 @@ services:
 
   watcher:
     container_name: shotit-worker-watcher
-    image: ghcr.io/shotit/shotit-worker-watcher:v0.9.16
+    image: ghcr.io/shotit/shotit-worker-watcher:v0.9.20
     restart: unless-stopped
     environment:
       - TRACE_API_URL=http://172.17.0.1:${API_PORT}
@@ -170,7 +170,7 @@ services:
 
   hasher:
     container_name: shotit-worker-hasher
-    image: ghcr.io/shotit/shotit-worker-hasher:v0.9.16
+    image: ghcr.io/shotit/shotit-worker-hasher:v0.9.20
     restart: unless-stopped
     environment:
       - TRACE_API_URL=http://172.17.0.1:${API_PORT}
@@ -186,9 +186,10 @@ services:
 
   loader:
     container_name: shotit-worker-loader
-    image: ghcr.io/shotit/shotit-worker-loader:v0.9.16
+    image: ghcr.io/shotit/shotit-worker-loader:v0.9.20
     restart: unless-stopped
     environment:
+      - TRACE_ALGO=${TRACE_ALGO}
       - TRACE_API_URL=http://172.17.0.1:${API_PORT}
       - TRACE_API_SECRET=${TRACE_API_SECRET}
       - TRACE_MEDIA_URL=http://172.17.0.1:${MEDIA_PORT}
@@ -199,12 +200,12 @@ services:
 
   searcher:
     container_name: shotit-worker-searcher
-    image: ghcr.io/shotit/shotit-worker-searcher:v0.9.16
+    image: ghcr.io/shotit/shotit-worker-searcher:v0.9.20
     restart: unless-stopped
     ports:
       - ${SEARCHER_PORT}:19531
     environment:
-      - TRACE_ALGO=cl
+      - TRACE_ALGO=${TRACE_ALGO}
       - SOLA_SOLR_LIST=http://172.17.0.1:${SOLR_PORT}/solr/
       - SEARCHER_URL=http://172.17.0.1:${SEARCHER_PORT}
       - MILVUS_URL=172.17.0.1:${MILVUS_PORT}
